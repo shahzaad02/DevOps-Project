@@ -6,12 +6,6 @@ pipeline {
   }
 
   stages {
-    stage('Clone Project') {
-      steps {
-        git url: 'https://github.com/Khawalid/devops-project.git'
-      }
-    }
-
     stage('Terraform Init & Apply') {
       environment {
         ARM_CLIENT_ID       = credentials('azure-client-id')
