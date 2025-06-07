@@ -44,6 +44,7 @@ pipeline {
         withCredentials([sshUserPrivateKey(credentialsId: 'ansible_ssh_key', keyFileVariable: 'SSH_KEY')]) {
           sh '''
             # Create dynamic inventory
+            export ANSIBLE_HOST_KEY_CHECKING=False
             echo "[web]" > inventory.ini
             echo "$VM_PUBLIC_IP ansible_user=devops ansible_ssh_private_key_file=$SSH_KEY" >> inventory.ini
 
