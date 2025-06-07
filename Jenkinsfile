@@ -34,7 +34,7 @@ pipeline {
             script: 'terraform -chdir=terraform output -raw vm_ip',
             returnStdout: true
           ).trim()
-          echo "Azure VM IP: ${VM_PUBLIC_IP}"
+          echo "Azure VM IP: ${env.VM_PUBLIC_IP}"
         }
       }
     }
@@ -46,7 +46,7 @@ pipeline {
             ansible-playbook ansible/install_web.yml \
               -u devops \
               --private-key "$SSH_KEY" \
-              -i "${VM_PUBLIC_IP},"
+              -i "$VM_PUBLIC_IP,"
           '''
         }
       }
@@ -54,7 +54,7 @@ pipeline {
 
     stage('Verify Deployment') {
       steps {
-        sh 'curl -s http://${VM_PUBLIC_IP} | grep -i "devops project completed"'
+        sh 'curl -s http://$VM_PUBLIC_IP | grep -i "devops project completed"'
       }
     }
   }
