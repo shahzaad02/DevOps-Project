@@ -43,10 +43,15 @@ pipeline {
       steps {
         withCredentials([sshUserPrivateKey(credentialsId: 'ansible_ssh_key', keyFileVariable: 'SSH_KEY')]) {
           sh '''
-            ansible-playbook ansible/install_web.yml \
-              -u devops \
-              --private-key "$SSH_KEY" \
-              -i "$VM_PUBLIC_IP,"
+            # Create dynamic inventory
+            echo "[web]" > inventory.ini
+            echo "$VM_PUBLIC_IP ansible_user=devops ansible_ssh_private_key_file=$SSH_KEY" >> inventory.ini
+
+            # Run Ansible playbook
+            ansible-playbook ansible/install_web.yml -i inventory.ini
+
+            # Clean up
+            rm -f inventory.ini
           '''
         }
       }
